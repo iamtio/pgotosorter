@@ -23,7 +23,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('file',
                         nargs="+",
-                        help="JPEG image files",
-                        type=argparse.FileType('rb'))
-    for f in parser.parse_args().file:
-        print(get_date(f))
+                        help="JPEG image files")
+    for file_name in parser.parse_args().file:
+        with open(file_name, 'rb') as f:
+            print(get_date(f))
