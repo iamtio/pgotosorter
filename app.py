@@ -1,6 +1,7 @@
 from __future__ import print_function, unicode_literals, division
 import exifread
 import os
+import glob
 import sys
 import argparse
 from datetime import datetime
@@ -19,11 +20,32 @@ def get_date(input_file):
         date = datetime.fromtimestamp(os.path.getctime(input_file.name))
     return date.strftime("%Y-%m-%d")
 
+
+def find_files(directory, filter, recursive):
+    """Filter files in directory"""
+    dirs = [directory]
+    if recursive:
+        dirs = [d[0] for d in os.walk(directory)]
+    filtered = []
+    for d in dirs:
+        file_glob = os.path.join(d, filter)
+        filtered.extend(glob.glob(file_glob))
+    return filtered
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('file',
-                        nargs="+",
-                        help="JPEG image files")
-    for file_name in parser.parse_args().file:
+    parser.add_argument('--directory', '-d',
+                        metavar="DIR",
+                        help="Directory to scan files",
+                        required=True)
+    parser.add_argument('--recursive', '-r',
+                        help="Find files in subdirs",
+                        action="store_true")
+    parser.add_argument('--filter', '-f',
+                        metavar="GLOB",
+                        help="Filter files. Default: '*.jpg'",
+                        default="*.jpg")
+
+    for file_name in find_files(**vars(parser.parse_args())):
         with open(file_name, 'rb') as f:
             print(get_date(f))
