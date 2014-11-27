@@ -1,11 +1,13 @@
 import exifread
-import sys
 import os
 import argparse
 from datetime import datetime
 
 
 def get_date(input_file):
+    """
+    Get file creation date
+    """
     try:
         date = str(exifread.process_file(input_file)['Image DateTime'])
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
