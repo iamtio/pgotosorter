@@ -8,9 +8,7 @@ from datetime import datetime
 
 
 def get_file_date(input_file):
-    """
-    Get file creation date
-    """
+    """Get file creation date"""
     try:
         date = str(exifread.process_file(input_file)['Image DateTime'])
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
@@ -32,27 +30,33 @@ def find_files(directory, filter, recursive):
             yield file
 
 
-def move_file(filename, date, directory):
-    df = date.strftime
+def safe_file(file, directory):
+    """Generate safe file path into new directory"""
     new_file = None
     exist = 0
     while True:
-        safe_name = os.path.split(filename)[-1]
+        safe_name = os.path.split(file)[-1]
         if exist > 0:
             parts = safe_name.split(".")
             safe_name = "{0}({1}).{2}".format(".".join(parts[:-1]),
                                               exist, parts[-1])
-
         new_file = os.path.join(directory,
-                                df("%Y"), df("%Y_%m"), df("%Y_%m_%d"),
                                 safe_name)
         if os.path.isfile(new_file):
             exist += 1
         else:
             break
-    date = date.strftime("%Y-%m-%d")
-    print(os.path.abspath(filename))
-    print(os.path.abspath(new_file))
+    return new_file
+
+
+def move_file(file, date, directory):
+    """Move file to structured by date directory"""
+    df = date.strftime
+    new_directory = \
+        os.path.join(directory, df("%Y"), df("%Y_%m"), df("%Y_%m_%d"))
+
+    print(os.path.abspath(file))
+    print(os.path.abspath(safe_file(file, new_directory)))
 
 
 if __name__ == "__main__":
