@@ -7,7 +7,7 @@ import argparse
 from datetime import datetime
 
 
-def get_date(input_file):
+def get_file_date(input_file):
     """
     Get file creation date
     """
@@ -15,10 +15,11 @@ def get_date(input_file):
         date = str(exifread.process_file(input_file)['Image DateTime'])
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
     except KeyError:
-        msg = "Warning! File '{0}': EXIF tag not found".format(input_file.name)
+        msg = "Warning! EXIF tag not found"\
+              "for file '{0}'".format(input_file.name)
         print(msg, file=sys.stderr)
         date = datetime.fromtimestamp(os.path.getctime(input_file.name))
-    return date.strftime("%Y-%m-%d")
+    return date
 
 
 def find_files(directory, filter, recursive):
@@ -46,4 +47,7 @@ if __name__ == "__main__":
 
     for file_name in find_files(**vars(parser.parse_args())):
         with open(file_name, 'rb') as f:
-            print(get_date(f))
+            date = get_file_date(f).strftime("%Y-%m-%d")
+            print("{0}: {1}".format(
+                os.path.abspath(file_name),
+                date))
