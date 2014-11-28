@@ -1,22 +1,22 @@
 from __future__ import print_function, unicode_literals, division
-import exifread
 import os
 import glob
 import sys
 import argparse
 from datetime import datetime
-
+from PIL import Image
 
 def get_file_date(input_file):
     """Get file creation date"""
     try:
-        date = str(exifread.process_file(input_file)['Image DateTime'])
+        with open(input_file, 'rb') as file:
+            date = str(Image.open(file)._getexif()[36867]) # DateTimeOriginal
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
     except KeyError:
         msg = "Warning! EXIF tag not found"\
-              "for file '{0}'".format(input_file.name)
+              "for file '{0}'".format(input_file)
         print(msg, file=sys.stderr)
-        date = datetime.fromtimestamp(os.path.getctime(input_file.name))
+        date = datetime.fromtimestamp(os.path.getctime(input_file))
     return date
 
 
@@ -75,6 +75,5 @@ if __name__ == "__main__":
                         default="*.jpg")
     args = vars(parser.parse_args())
     for file_name in find_files(**args):
-        with open(file_name, 'rb') as file:
-            date = get_file_date(file)
+        date = get_file_date(file_name)
         move_file(file_name, date, args['directory'])
