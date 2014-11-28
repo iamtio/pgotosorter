@@ -34,11 +34,22 @@ def find_files(directory, filter, recursive):
 
 def move_file(filename, date, directory):
     df = date.strftime
-    new_file = os.path.join(directory,
-                            df("%Y"),
-                            df("%Y_%m"),
-                            df("%Y_%m_%d"),
-                            os.path.split(filename)[-1])
+    new_file = None
+    exist = 0
+    while True:
+        safe_name = os.path.split(filename)[-1]
+        if exist > 0:
+            parts = safe_name.split(".")
+            safe_name = "{0}({1}).{2}".format(".".join(parts[:-1]),
+                                              exist, parts[-1])
+
+        new_file = os.path.join(directory,
+                                df("%Y"), df("%Y_%m"), df("%Y_%m_%d"),
+                                safe_name)
+        if os.path.isfile(new_file):
+            exist += 1
+        else:
+            break
     date = date.strftime("%Y-%m-%d")
     print(os.path.abspath(filename))
     print(os.path.abspath(new_file))
@@ -62,4 +73,3 @@ if __name__ == "__main__":
         with open(file_name, 'rb') as file:
             date = get_file_date(file)
         move_file(file_name, date, args['directory'])
-
