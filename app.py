@@ -55,8 +55,9 @@ def move_file(file, date, directory):
     new_directory = \
         os.path.join(directory, df("%Y"), df("%Y_%m"), df("%Y_%m_%d"))
 
-    print(os.path.abspath(file))
-    print(os.path.abspath(safe_file(file, new_directory)))
+    print("Moving to {0} from {1}".format(
+        os.path.abspath(safe_file(file, new_directory)),
+        os.path.abspath(file)))
 
 
 if __name__ == "__main__":
