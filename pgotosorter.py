@@ -8,11 +8,12 @@ import re
 from datetime import datetime
 from PIL import Image
 
+
 def get_file_date(input_file):
     """Get file creation date"""
     try:
         with open(input_file, 'rb') as file:
-            date = str(Image.open(file)._getexif()[36867]) # DateTimeOriginal
+            date = str(Image.open(file)._getexif()[36867])  # DateTimeOriginal
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
     except KeyError:
         msg = "Warning! EXIF tag not found"\
@@ -53,8 +54,8 @@ def safe_file(file, directory):
 
 def already_moved(file):
     path_code = ":".join(file.split(os.path.sep)[-4:-1])
-    return re.match("^\d{4}:"\
-                    "\d{4}_\d{2}:"\
+    return re.match("^\d{4}:"
+                    "\d{4}_\d{2}:"
                     "\d{4}_\d{2}_\d{2}$", path_code)
 
 
