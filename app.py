@@ -25,12 +25,10 @@ def find_files(directory, filter, recursive):
     """Filter files in directory"""
     dirs = [directory]
     if recursive:
-        dirs = [d[0] for d in os.walk(directory)]
-    filtered = []
-    for d in dirs:
-        file_glob = os.path.join(d, filter)
-        filtered.extend(glob.glob(file_glob))
-    return filtered
+        dirs = (d[0] for d in os.walk(directory))
+    for dir in dirs:
+        for file in glob.iglob(os.path.join(dir.decode('utf-8'), filter)):
+            yield file
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
