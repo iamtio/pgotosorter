@@ -4,7 +4,7 @@ import glob
 import sys
 import argparse
 import re
-
+import errno
 from datetime import datetime
 from PIL import Image
 
@@ -59,6 +59,16 @@ def already_moved(file):
                     "\d{4}_\d{2}_\d{2}$", path_code)
 
 
+def mkdir(dir):
+    dir = os.path.abspath(dir)
+    try:
+        os.makedirs(dir)
+    except OSError as e:
+        if e.errno == errno.EEXIST and os.path.isdir(dir):
+            pass
+        else: raise
+
+
 def move_file(file, date, directory):
     """Move file to structured by date directory"""
     if already_moved(file):
@@ -66,10 +76,11 @@ def move_file(file, date, directory):
     df = date.strftime
     new_directory = \
         os.path.join(directory, df("%Y"), df("%Y_%m"), df("%Y_%m_%d"))
-    print("Moving to {0} from {1}".format(
-        os.path.abspath(safe_file(file, new_directory)),
-        os.path.abspath(file)))
-
+    src = os.path.abspath(file)
+    dst = os.path.abspath(safe_file(file, new_directory))
+    mkdir(new_directory)
+    print("Moving to {0} from {1}".format(dst, src))
+    return os.rename(src, dst)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
