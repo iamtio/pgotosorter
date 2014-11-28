@@ -31,6 +31,19 @@ def find_files(directory, filter, recursive):
         for file in glob.iglob(os.path.join(dir.decode('utf-8'), filter)):
             yield file
 
+
+def move_file(filename, date, directory):
+    df = date.strftime
+    new_file = os.path.join(directory,
+                            df("%Y"),
+                            df("%Y_%m"),
+                            df("%Y_%m_%d"),
+                            os.path.split(filename)[-1])
+    date = date.strftime("%Y-%m-%d")
+    print(os.path.abspath(filename))
+    print(os.path.abspath(new_file))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--directory', '-d',
@@ -44,10 +57,9 @@ if __name__ == "__main__":
                         metavar="GLOB",
                         help="Filter files. Default: '*.jpg'",
                         default="*.jpg")
+    args = vars(parser.parse_args())
+    for file_name in find_files(**args):
+        with open(file_name, 'rb') as file:
+            date = get_file_date(file)
+        move_file(file_name, date, args['directory'])
 
-    for file_name in find_files(**vars(parser.parse_args())):
-        with open(file_name, 'rb') as f:
-            date = get_file_date(f).strftime("%Y-%m-%d")
-            print("{0}: {1}".format(
-                os.path.abspath(file_name),
-                date))
