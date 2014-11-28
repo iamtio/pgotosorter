@@ -51,10 +51,16 @@ def safe_file(file, directory):
     return new_file
 
 
+def already_moved(file):
+    path_code = ":".join(file.split(os.path.sep)[-4:-1])
+    return re.match("^\d{4}:"\
+                    "\d{4}_\d{2}:"\
+                    "\d{4}_\d{2}_\d{2}$", path_code)
+
+
 def move_file(file, date, directory):
     """Move file to structured by date directory"""
-    # Skip file if already moved
-    if re.match("^\d{4}_\d{2}_\d{2}$", file.split(os.path.sep)[-2:-1][0]):
+    if already_moved(file):
         return
     df = date.strftime
     new_directory = \
