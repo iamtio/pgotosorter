@@ -1,25 +1,32 @@
 from __future__ import print_function, unicode_literals, division
 import os
 import glob
-import sys
 import argparse
 import re
 import errno
 from datetime import datetime
+import logging
 from PIL import Image
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] %(asctime)s: %(message)s")
 
 
 def get_file_date(input_file):
     """Get file creation date"""
+    date = None
     try:
         with open(input_file, 'rb') as file:
             date = str(Image.open(file)._getexif()[36867])  # DateTimeOriginal
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
     except KeyError:
-        msg = "Warning! EXIF tag not found"\
+        msg = "warning! EXIF tag not found "\
               "for file '{0}'".format(input_file)
-        print(msg, file=sys.stderr)
+        logging.warn(msg)
         date = datetime.fromtimestamp(os.path.getctime(input_file))
+    except IOError as e:
+        logging.error(e)
     return date
 
 
@@ -66,7 +73,8 @@ def mkdir(dir):
     except OSError as e:
         if e.errno == errno.EEXIST and os.path.isdir(dir):
             pass
-        else: raise
+        else:
+            raise
 
 
 def move_file(file, date, directory):
@@ -79,7 +87,7 @@ def move_file(file, date, directory):
     src = os.path.abspath(file)
     dst = os.path.abspath(safe_file(file, new_directory))
     mkdir(new_directory)
-    print("Moving to {0} from {1}".format(dst, src))
+    logging.info("moving to {0} from {1}".format(dst, src))
     return os.rename(src, dst)
 
 if __name__ == "__main__":
@@ -98,4 +106,8 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     for file_name in find_files(**args):
         date = get_file_date(file_name)
+        if not date:
+            logging.warn("can't get date for '{0}' "
+                         "skipping it".format(file_name))
+            continue
         move_file(file_name, date, args['directory'])
