@@ -3,6 +3,8 @@ import os
 import glob
 import sys
 import argparse
+import re
+
 from datetime import datetime
 from PIL import Image
 
@@ -51,10 +53,12 @@ def safe_file(file, directory):
 
 def move_file(file, date, directory):
     """Move file to structured by date directory"""
+    # Skip file if already moved
+    if re.match("^\d{4}_\d{2}_\d{2}$", file.split(os.path.sep)[-2:-1][0]):
+        return
     df = date.strftime
     new_directory = \
         os.path.join(directory, df("%Y"), df("%Y_%m"), df("%Y_%m_%d"))
-
     print("Moving to {0} from {1}".format(
         os.path.abspath(safe_file(file, new_directory)),
         os.path.abspath(file)))
