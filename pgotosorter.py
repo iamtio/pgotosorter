@@ -20,23 +20,24 @@ def get_file_date(input_file):
         with open(input_file, 'rb') as file:
             date = str(Image.open(file)._getexif()[36867])  # DateTimeOriginal
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
-    except KeyError, TypeError:
+    except KeyError:
         msg = "warning! EXIF tag not found "\
               "for file '{0}'".format(input_file)
         logging.warn(msg)
         date = datetime.fromtimestamp(os.path.getctime(input_file))
-    except IOError as e:
+    except Exception as e:
         logging.error(e)
     return date
 
 
 def find_files(directory, filter, recursive):
     """Filter files in directory"""
+    directory = unicode(directory)
     dirs = [directory]
     if recursive:
         dirs = (d[0] for d in os.walk(directory))
     for dir in dirs:
-        for file in glob.iglob(os.path.join(dir.decode('utf-8'), filter)):
+        for file in glob.iglob(os.path.join(dir, filter)):
             yield file
 
 
