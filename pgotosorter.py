@@ -20,7 +20,7 @@ def get_file_date(input_file):
         with open(input_file, 'rb') as file:
             date = str(Image.open(file)._getexif()[36867])  # DateTimeOriginal
         date = datetime.strptime(date, "%Y:%m:%d %H:%M:%S")
-    except KeyError:
+    except KeyError, TypeError:
         msg = "warning! EXIF tag not found "\
               "for file '{0}'".format(input_file)
         logging.warn(msg)
