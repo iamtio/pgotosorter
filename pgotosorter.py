@@ -7,6 +7,7 @@ import errno
 from datetime import datetime
 import logging
 from PIL import Image
+import six
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,7 +33,7 @@ def get_file_date(input_file):
 
 def find_files(directory, filter, recursive):
     """Filter files in directory"""
-    directory = unicode(directory)
+    directory = six.u(directory)
     dirs = [directory]
     if recursive:
         dirs = (d[0] for d in os.walk(directory))
