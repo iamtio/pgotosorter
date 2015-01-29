@@ -8,7 +8,7 @@ PgotoSorter is a small script in Python and Python 3 which can organize your pho
         IMG_0042.jpg
     Camera_2015-01-01-19-30.jpg
 
-Script will read EXIF data from all images and move them into human readable directory strucure: `Year/Year_Month/Year_Month_Day`. For example:
+Script will read EXIF data from all images or file creation date(if no EXIF provided) and move them into human readable directory strucure: `Year/Year_Month/Year_Month_Day/`. For example:
 
     2014/
         2014_08/
@@ -25,11 +25,11 @@ Script will read EXIF data from all images and move them into human readable dir
 If names of files are identical script will not overwrite them. File will be renamed from `filename.jpg` to `filename(1).jpg`.
 
 ## Installing ##
-Just save [`pgotosorter.py`](https://bitbucket.org/iamtio/pgotosorter/raw/master/pgotosorter.py) and install python libs:
+Just save [`pgotosorter.py`](https://bitbucket.org/iamtio/pgotosorter/raw/master/pgotosorter.py) and install required python libs:
 
     $ sudo apt-get install python-six python-pil
 
-also you can install them from pypi. But before building Pillow from pypi you must install libjpeg-dev:
+also you can install them from pypi. But before building `Pillow` you must install `libjpeg-dev`:
 
     $ sudo apt-get install libjpeg-dev
     $ pip install Pillow six
