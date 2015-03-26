@@ -1,4 +1,4 @@
-# Photo organizing script #
+# Photo organizing script
 PgotoSorter is a small script in Python and Python 3 which can organize your photos. For example we have some directory:
 
     last_summer/
@@ -24,7 +24,7 @@ Script will read EXIF data from all images or file creation date(if no EXIF prov
 
 If names of files are identical script will not overwrite them. File will be renamed from `filename.jpg` to `filename(1).jpg`.
 
-## Installing ##
+## Installing
 Just save [`pgotosorter.py`](https://bitbucket.org/iamtio/pgotosorter/raw/master/pgotosorter.py) and install required python libs:
 
     $ sudo apt-get install python-six python-pil
