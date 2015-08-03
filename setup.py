@@ -16,7 +16,7 @@ setup(
     include_package_data=True,
     license='BSD License',
     description='Photo organizing app',
-    long_description=_read('README.md').decode('utf-8'),
+    long_description=_read('README.rst').decode('utf-8'),
     url='https://github.com/iamtio/photosorter',
     author='Igor Tsarev',
     author_email='iam@tio.so',
