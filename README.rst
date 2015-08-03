@@ -62,3 +62,7 @@ Run:
     photosorter --help
 
 to see script params
+
+Contribute
+----------
+Welcome to https://github.com/iamtio/photosorter
